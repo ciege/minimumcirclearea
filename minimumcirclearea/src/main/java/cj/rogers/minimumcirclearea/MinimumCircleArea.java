@@ -39,7 +39,7 @@ public class MinimumCircleArea {
 
 	BiPredicate<Circle, Point2D> isPointInclosed = (c, p) -> (c.getRadius() >= calcDistance.apply(c.getCenter(), p));
 
-	public Circle minimumCircleArea(Circle circle, List<Point2D> pointList) {
+	public Circle improveCircle(Circle circle, List<Point2D> pointList) {
 		List<Point2D> inclosedPointList = pointList.stream().filter(p -> isPointInclosed.test(circle, p))
 				.collect(toList());
 
@@ -52,6 +52,19 @@ public class MinimumCircleArea {
 				.min(Circle::compareTo).orElse(circle);
 
 		return smallestAdjacentCircle.compareTo(circle) < 0 ? smallestAdjacentCircle : circle;
+	}
+
+	public Circle optimalCircle(Circle circle, List<Point2D> pointList) {
+		Circle givenCircle = circle;
+		Circle returnCircle = null;
+		while (!givenCircle.equals(returnCircle)) {
+			if (returnCircle != null) {
+				givenCircle = returnCircle;
+			}
+			returnCircle = improveCircle(givenCircle, pointList);
+		}
+
+		return returnCircle;
 	}
 
 }
